@@ -5,25 +5,24 @@ export default {
     extend: {
       colors: {
         navy: {
-          900: '#0f172a',
-          800: '#111827',
-          700: '#1e293b',
-          600: '#334155',
+          950: '#050a18',
+          900: '#0a1628',
+          800: '#111d35',
+          700: '#1a2744',
+          600: '#2a3a5c',
+          500: '#3d5280',
         },
         cobalt: {
+          600: '#1d4ed8',
           500: '#2563eb',
           400: '#3b82f6',
-          600: '#1d4ed8',
+          300: '#60a5fa',
         },
         golden: {
+          600: '#ca8a04',
           500: '#eab308',
           400: '#facc15',
-          600: '#ca8a04',
         },
-      },
-      fontFamily: {
-        serif: ['Georgia', 'Playfair Display', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
     },
   },
