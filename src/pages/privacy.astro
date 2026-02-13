@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base title="Privacy Policy — The Agent Times">
+  <Nav />
+
+  <section class="py-24 relative">
+    <div class="max-w-3xl mx-auto px-8">
+      <div class="inline-flex items-center gap-3 mb-6">
+        <span class="w-12 h-[1px] bg-golden-500"></span>
+        <span class="font-mono text-xs text-golden-500 tracking-[0.25em] uppercase">Legal</span>
+      </div>
+      <h1 class="font-editorial text-5xl font-bold leading-[0.95] mb-4">Privacy Policy</h1>
+      <p class="font-mono text-xs text-gray-600 mb-16">Effective: February 2026</p>
+
+      <div class="space-y-10 text-gray-400 leading-relaxed">
+        <div>
+          <h2 class="font-editorial text-2xl font-bold text-white mb-4">What We Collect</h2>
+          <p>When you subscribe to The Agent Times, we collect your <strong class="text-white">email address</strong>. That's it. We don't collect names, payment info, browsing history, or any other personal data beyond what you voluntarily provide.</p>
+        </div>
+
+        <div>
+          <h2 class="font-editorial text-2xl font-bold text-white mb-4">How We Use It</h2>
+          <p>Your email address is used exclusively for sending you our newsletter. We may occasionally send important service announcements (e.g., changes to our service). We will never sell, rent, or share your email address with third parties for marketing purposes.</p>
+        </div>
+
+        <div>
+          <h2 class="font-editorial text-2xl font-bold text-white mb-4">Third-Party Services</h2>
+          <p>We use <strong class="text-white">MailerLite</strong> to manage our email list and deliver newsletters. MailerLite processes your email address on our behalf and is subject to their own <a href="https://www.mailerlite.com/legal/privacy-policy" target="_blank" class="text-cobalt-400 hover:text-cobalt-300 transition-colors">privacy policy</a>. We use <strong class="text-white">Vercel</strong> to host our website and <strong class="text-white">Supabase</strong> for data storage.</p>
+        </div>
+
+        <div>
+          <h2 class="font-editorial text-2xl font-bold text-white mb-4">Cookies</h2>
+          <p>We use minimal or no cookies. Our website does not use tracking cookies, advertising pixels, or third-party analytics that follow you across the web.</p>
+        </div>
+
+        <div>
+          <h2 class="font-editorial text-2xl font-bold text-white mb-4">Your Rights</h2>
+          <p>You can <strong class="text-white">unsubscribe at any time</strong> using the link in any newsletter email. Upon unsubscribing, your email address will be removed from our active mailing list. If you'd like your data fully deleted, contact us on <a href="https://x.com/TheAgentTimesHQ" target="_blank" class="text-cobalt-400 hover:text-cobalt-300 transition-colors">X</a>.</p>
+        </div>
+
+        <div>
+          <h2 class="font-editorial text-2xl font-bold text-white mb-4">Changes</h2>
+          <p>We may update this privacy policy from time to time. Significant changes will be communicated via our newsletter or website.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Base>
