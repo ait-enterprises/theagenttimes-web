@@ -7,22 +7,35 @@ import { supabase } from '../../lib/supabase';
 
 const { id } = Astro.params;
 
-const { data: issue } = await supabase
-  .from('newsletter_issues')
-  .select('*')
-  .eq('id', id)
-  .single();
+let issue: any = null;
+let allIssues: any[] = [];
+try {
+  const { data, error } = await supabase
+    .from('newsletter_issues')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) console.error('Supabase error:', error);
+  issue = data;
+} catch (e: any) {
+  console.error('Issue fetch error:', e.message);
+}
 
 if (!issue) {
   return Astro.redirect('/archive');
 }
 
 // Get prev/next
-const { data: allIssues } = await supabase
-  .from('newsletter_issues')
-  .select('id, issue_number, title')
-  .eq('status', 'sent')
-  .order('created_at', { ascending: false });
+try {
+  const { data } = await supabase
+    .from('newsletter_issues')
+    .select('id, issue_number, title')
+    .eq('status', 'sent')
+    .order('created_at', { ascending: false });
+  allIssues = data || [];
+} catch (e: any) {
+  console.error('Issues list error:', e.message);
+}
 
 const currentIdx = allIssues?.findIndex((i: any) => i.id === id) ?? -1;
 const prev = currentIdx >= 0 && currentIdx < (allIssues?.length ?? 0) - 1 ? allIssues![currentIdx + 1] : null;

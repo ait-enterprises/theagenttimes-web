@@ -12,11 +12,24 @@ const $$id = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$id;
   const { id } = Astro2.params;
-  const { data: issue } = await supabase.from("newsletter_issues").select("*").eq("id", id).single();
+  let issue = null;
+  let allIssues = [];
+  try {
+    const { data, error } = await supabase.from("newsletter_issues").select("*").eq("id", id).single();
+    if (error) console.error("Supabase error:", error);
+    issue = data;
+  } catch (e) {
+    console.error("Issue fetch error:", e.message);
+  }
   if (!issue) {
     return Astro2.redirect("/archive");
   }
-  const { data: allIssues } = await supabase.from("newsletter_issues").select("id, issue_number, title").eq("status", "sent").order("created_at", { ascending: false });
+  try {
+    const { data } = await supabase.from("newsletter_issues").select("id, issue_number, title").eq("status", "sent").order("created_at", { ascending: false });
+    allIssues = data || [];
+  } catch (e) {
+    console.error("Issues list error:", e.message);
+  }
   const currentIdx = allIssues?.findIndex((i) => i.id === id) ?? -1;
   const prev = currentIdx >= 0 && currentIdx < (allIssues?.length ?? 0) - 1 ? allIssues[currentIdx + 1] : null;
   const next = currentIdx > 0 ? allIssues[currentIdx - 1] : null;

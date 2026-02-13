@@ -8,9 +8,16 @@ export { renderers } from '../renderers.mjs';
 
 const prerender = false;
 const $$Index = createComponent(async ($$result, $$props, $$slots) => {
-  const { data: issues } = await supabase.from("newsletter_issues").select("*").eq("status", "sent").order("created_at", { ascending: false });
-  const featured = issues?.[0] || null;
-  const older = issues?.slice(1) || [];
+  let issues = [];
+  try {
+    const { data, error } = await supabase.from("newsletter_issues").select("*").eq("status", "sent").order("created_at", { ascending: false });
+    if (error) console.error("Supabase error:", error);
+    issues = data || [];
+  } catch (e) {
+    console.error("Archive fetch error:", e.message);
+  }
+  const featured = issues[0] || null;
+  const older = issues.slice(1) || [];
   function stripHtml(html) {
     return html?.replace(/<[^>]*>/g, "").replace(/&[^;]+;/g, " ") || "";
   }

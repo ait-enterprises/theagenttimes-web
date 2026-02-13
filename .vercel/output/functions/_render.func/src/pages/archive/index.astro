@@ -5,14 +5,21 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import { supabase } from '../../lib/supabase';
 
-const { data: issues } = await supabase
-  .from('newsletter_issues')
-  .select('*')
-  .eq('status', 'sent')
-  .order('created_at', { ascending: false });
+let issues: any[] = [];
+try {
+  const { data, error } = await supabase
+    .from('newsletter_issues')
+    .select('*')
+    .eq('status', 'sent')
+    .order('created_at', { ascending: false });
+  if (error) console.error('Supabase error:', error);
+  issues = data || [];
+} catch (e: any) {
+  console.error('Archive fetch error:', e.message);
+}
 
-const featured = issues?.[0] || null;
-const older = issues?.slice(1) || [];
+const featured = issues[0] || null;
+const older = issues.slice(1) || [];
 
 function stripHtml(html: string) {
   return html?.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ') || '';
