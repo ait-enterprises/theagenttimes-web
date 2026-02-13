@@ -3,18 +3,23 @@ import { e as createComponent, k as renderComponent, r as renderTemplate, m as m
 import 'piccolore';
 import { $ as $$Base } from '../chunks/Base_D--14wn3.mjs';
 import { $ as $$Nav, a as $$Footer } from '../chunks/Footer_73igaGHi.mjs';
-import { s as supabase } from '../chunks/supabase_OCodwUKY.mjs';
 export { renderers } from '../renderers.mjs';
 
 const prerender = false;
 const $$Index = createComponent(async ($$result, $$props, $$slots) => {
   let issues = [];
+  let fetchError = null;
   try {
+    const { supabase } = await import('../chunks/supabase_B6ZWh78E.mjs');
     const { data, error } = await supabase.from("newsletter_issues").select("*").eq("status", "sent").order("created_at", { ascending: false });
-    if (error) console.error("Supabase error:", error);
+    if (error) {
+      console.error("Supabase error:", JSON.stringify(error));
+      fetchError = error.message;
+    }
     issues = data || [];
   } catch (e) {
-    console.error("Archive fetch error:", e.message);
+    console.error("Archive fetch error:", e.message, e.stack);
+    fetchError = e.message;
   }
   const featured = issues[0] || null;
   const older = issues.slice(1) || [];

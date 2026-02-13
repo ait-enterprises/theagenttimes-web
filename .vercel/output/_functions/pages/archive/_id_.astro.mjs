@@ -3,7 +3,6 @@ import { e as createComponent, k as renderComponent, r as renderTemplate, h as c
 import 'piccolore';
 import { $ as $$Base } from '../../chunks/Base_D--14wn3.mjs';
 import { $ as $$Nav, a as $$Footer } from '../../chunks/Footer_73igaGHi.mjs';
-import { s as supabase } from '../../chunks/supabase_OCodwUKY.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const $$Astro = createAstro();
@@ -15,20 +14,17 @@ const $$id = createComponent(async ($$result, $$props, $$slots) => {
   let issue = null;
   let allIssues = [];
   try {
+    const { supabase } = await import('../../chunks/supabase_B6ZWh78E.mjs');
     const { data, error } = await supabase.from("newsletter_issues").select("*").eq("id", id).single();
-    if (error) console.error("Supabase error:", error);
+    if (error) console.error("Supabase error:", JSON.stringify(error));
     issue = data;
+    const { data: listData } = await supabase.from("newsletter_issues").select("id, issue_number, title").eq("status", "sent").order("created_at", { ascending: false });
+    allIssues = listData || [];
   } catch (e) {
-    console.error("Issue fetch error:", e.message);
+    console.error("Archive [id] error:", e.message, e.stack);
   }
   if (!issue) {
     return Astro2.redirect("/archive");
-  }
-  try {
-    const { data } = await supabase.from("newsletter_issues").select("id, issue_number, title").eq("status", "sent").order("created_at", { ascending: false });
-    allIssues = data || [];
-  } catch (e) {
-    console.error("Issues list error:", e.message);
   }
   const currentIdx = allIssues?.findIndex((i) => i.id === id) ?? -1;
   const prev = currentIdx >= 0 && currentIdx < (allIssues?.length ?? 0) - 1 ? allIssues[currentIdx + 1] : null;

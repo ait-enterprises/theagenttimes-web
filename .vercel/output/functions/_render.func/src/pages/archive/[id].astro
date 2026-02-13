@@ -3,38 +3,34 @@ export const prerender = false;
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
-import { supabase } from '../../lib/supabase';
 
 const { id } = Astro.params;
 
 let issue: any = null;
 let allIssues: any[] = [];
 try {
+  const { supabase } = await import('../../lib/supabase');
   const { data, error } = await supabase
     .from('newsletter_issues')
     .select('*')
     .eq('id', id)
     .single();
-  if (error) console.error('Supabase error:', error);
+  if (error) console.error('Supabase error:', JSON.stringify(error));
   issue = data;
-} catch (e: any) {
-  console.error('Issue fetch error:', e.message);
-}
 
-if (!issue) {
-  return Astro.redirect('/archive');
-}
-
-// Get prev/next
-try {
-  const { data } = await supabase
+  // Get prev/next
+  const { data: listData } = await supabase
     .from('newsletter_issues')
     .select('id, issue_number, title')
     .eq('status', 'sent')
     .order('created_at', { ascending: false });
-  allIssues = data || [];
+  allIssues = listData || [];
 } catch (e: any) {
-  console.error('Issues list error:', e.message);
+  console.error('Archive [id] error:', e.message, e.stack);
+}
+
+if (!issue) {
+  return Astro.redirect('/archive');
 }
 
 const currentIdx = allIssues?.findIndex((i: any) => i.id === id) ?? -1;

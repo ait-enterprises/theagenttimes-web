@@ -3,19 +3,24 @@ export const prerender = false;
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
-import { supabase } from '../../lib/supabase';
 
 let issues: any[] = [];
+let fetchError: string | null = null;
 try {
+  const { supabase } = await import('../../lib/supabase');
   const { data, error } = await supabase
     .from('newsletter_issues')
     .select('*')
     .eq('status', 'sent')
     .order('created_at', { ascending: false });
-  if (error) console.error('Supabase error:', error);
+  if (error) {
+    console.error('Supabase error:', JSON.stringify(error));
+    fetchError = error.message;
+  }
   issues = data || [];
 } catch (e: any) {
-  console.error('Archive fetch error:', e.message);
+  console.error('Archive fetch error:', e.message, e.stack);
+  fetchError = e.message;
 }
 
 const featured = issues[0] || null;
