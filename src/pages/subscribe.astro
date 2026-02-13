@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base title="Subscribe — The Agent Times">
+  <Nav />
+
+  <section class="py-24 relative min-h-[70vh] flex items-center">
+    <div class="absolute -top-32 -left-32 w-[500px] h-[500px] bg-cobalt-500/5 rounded-full blur-[150px]"></div>
+    <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-golden-500/5 rounded-full blur-[150px]"></div>
+    
+    <div class="max-w-2xl mx-auto px-8 relative z-10 w-full">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center gap-3 mb-6">
+          <span class="w-12 h-[1px] bg-golden-500"></span>
+          <span class="font-mono text-xs text-golden-500 tracking-[0.25em] uppercase">Join the Briefing</span>
+          <span class="w-12 h-[1px] bg-golden-500"></span>
+        </div>
+        <h1 class="font-editorial text-5xl md:text-6xl font-bold leading-[0.95] mb-6">Get Tomorrow's<br/>AI News Today.</h1>
+        <p class="text-gray-400 text-lg max-w-lg mx-auto leading-relaxed">
+          Three AI agents scan hundreds of sources, debate the biggest stories, and deliver a newsletter that actually matters — every day.
+        </p>
+      </div>
+
+      <!-- Subscribe Form -->
+      <div class="bg-white/[0.02] border border-white/[0.06] rounded-lg p-8 md:p-10 mb-8">
+        <form class="subscribe-form" data-form="page">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input type="email" name="email" required placeholder="your@email.com" 
+              class="flex-1 px-5 py-4 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-cobalt-500/50 focus:bg-white/[0.06] transition-all text-sm rounded" />
+            <button type="submit" class="subscribe-btn px-8 py-4 bg-golden-500 hover:bg-golden-400 text-navy-950 font-bold text-sm transition-colors whitespace-nowrap rounded">
+              Subscribe Free →
+            </button>
+          </div>
+          <p class="subscribe-msg text-gray-600 text-xs mt-4 text-center">Free daily dispatch. No spam. Unsubscribe instantly.</p>
+        </form>
+      </div>
+
+      <!-- What you get -->
+      <div class="grid sm:grid-cols-3 gap-6 mt-12">
+        <div class="text-center">
+          <div class="w-12 h-12 mx-auto mb-4 border border-cobalt-500/30 rounded-lg flex items-center justify-center">
+            <span class="text-xl">🔍</span>
+          </div>
+          <h3 class="font-semibold text-sm mb-2">Scout Scans</h3>
+          <p class="text-gray-500 text-xs leading-relaxed">247+ sources monitored daily — news sites, X, research papers, GitHub repos.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 mx-auto mb-4 border border-golden-500/30 rounded-lg flex items-center justify-center">
+            <span class="text-xl">✍️</span>
+          </div>
+          <h3 class="font-semibold text-sm mb-2">Quill Writes</h3>
+          <p class="text-gray-500 text-xs leading-relaxed">AI distills the noise into what actually matters — concise, opinionated, useful.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 mx-auto mb-4 border border-cobalt-500/30 rounded-lg flex items-center justify-center">
+            <span class="text-xl">📢</span>
+          </div>
+          <h3 class="font-semibold text-sm mb-2">Herald Delivers</h3>
+          <p class="text-gray-500 text-xs leading-relaxed">Straight to your inbox every morning. No fluff, no filler, just the brief.</p>
+        </div>
+      </div>
+
+      <!-- Social proof / trust -->
+      <div class="mt-16 text-center">
+        <div class="inline-flex items-center gap-2 text-gray-600 text-xs font-mono tracking-wide">
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+          AGENTS ONLINE — NEXT ISSUE IN PRODUCTION
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+
+  <script>
+    document.querySelectorAll('.subscribe-form').forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const f = e.currentTarget as HTMLFormElement;
+        const btn = f.querySelector('.subscribe-btn') as HTMLButtonElement;
+        const msg = f.parentElement?.querySelector('.subscribe-msg') || f.nextElementSibling;
+        const email = (f.querySelector('input[name="email"]') as HTMLInputElement).value;
+        
+        btn.disabled = true;
+        btn.textContent = 'Subscribing...';
+        
+        try {
+          const res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+          });
+          const data = await res.json();
+          
+          if (res.ok) {
+            f.innerHTML = `
+              <div class="text-center py-6">
+                <div class="text-4xl mb-4">🎯</div>
+                <h3 class="font-editorial text-2xl font-bold mb-2 text-white">You're in.</h3>
+                <p class="text-gray-400">Check your inbox — your first briefing is on the way.</p>
+              </div>`;
+            if (msg) { msg.classList.add('hidden'); }
+          } else {
+            if (msg) {
+              msg.textContent = data.error || 'Something went wrong. Try again.';
+              msg.classList.remove('hidden');
+              (msg as HTMLElement).style.color = '#f87171';
+            }
+            btn.disabled = false;
+            btn.textContent = 'Subscribe Free →';
+          }
+        } catch {
+          btn.disabled = false;
+          btn.textContent = 'Subscribe Free →';
+          if (msg) {
+            msg.textContent = 'Network error. Please try again.';
+            msg.classList.remove('hidden');
+            (msg as HTMLElement).style.color = '#f87171';
+          }
+        }
+      });
+    });
+  </script>
+</Base>
