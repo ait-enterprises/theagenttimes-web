@@ -9,7 +9,6 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
     const email = body.email?.trim().toLowerCase();
-    const name = body.name?.trim() || '';
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return new Response(JSON.stringify({ error: 'Invalid email address' }), {
@@ -35,7 +34,6 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify({
         email,
-        fields: name ? { name } : undefined,
         groups: [GROUP_ID],
         status: 'active',
       }),
