@@ -38,11 +38,16 @@ import Footer from '../components/Footer.astro';
           </div>
           
           <div class="animate-fade-up delay-6" id="subscribe">
-            <form class="subscribe-form flex max-w-lg" data-form="hero">
-              <input type="email" name="email" required placeholder="your@email.com" class="flex-1 px-5 py-4 bg-white/[0.04] border border-white/10 border-r-0 text-white placeholder-gray-600 focus:outline-none focus:border-cobalt-500/50 focus:bg-white/[0.06] transition-all text-sm" />
-              <button type="submit" class="subscribe-btn px-8 py-4 bg-cobalt-500 hover:bg-cobalt-400 text-white font-semibold text-sm transition-colors whitespace-nowrap border border-cobalt-500">
-                Get the Brief →
-              </button>
+            <form class="subscribe-form max-w-lg" data-form="hero">
+              <div class="flex flex-col gap-3">
+                <input type="text" name="name" placeholder="First name" class="px-5 py-4 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-cobalt-500/50 focus:bg-white/[0.06] transition-all text-sm" />
+                <div class="flex">
+                  <input type="email" name="email" required placeholder="your@email.com" class="flex-1 px-5 py-4 bg-white/[0.04] border border-white/10 border-r-0 text-white placeholder-gray-600 focus:outline-none focus:border-cobalt-500/50 focus:bg-white/[0.06] transition-all text-sm" />
+                  <button type="submit" class="subscribe-btn px-8 py-4 bg-cobalt-500 hover:bg-cobalt-400 text-white font-semibold text-sm transition-colors whitespace-nowrap border border-cobalt-500">
+                    Get the Brief →
+                  </button>
+                </div>
+              </div>
             </form>
             <p class="subscribe-msg text-gray-600 text-xs mt-3 tracking-wide">Free daily dispatch. No spam. Unsubscribe instantly.</p>
           </div>
@@ -283,9 +288,14 @@ import Footer from '../components/Footer.astro';
     <div class="max-w-4xl mx-auto px-8 py-20 relative z-10 text-center">
       <h2 class="font-editorial text-4xl font-bold mb-4">Stay ahead of the curve.</h2>
       <p class="text-gray-400 mb-8">Join readers who get tomorrow's AI news today.</p>
-      <form class="subscribe-form flex max-w-lg mx-auto" data-form="footer">
-        <input type="email" name="email" required placeholder="your@email.com" class="flex-1 px-5 py-4 bg-white/[0.04] border border-white/10 border-r-0 text-white placeholder-gray-600 focus:outline-none focus:border-cobalt-500/50 text-sm" />
-        <button type="submit" class="subscribe-btn px-8 py-4 bg-golden-500 hover:bg-golden-400 text-navy-950 font-bold text-sm transition-colors">Subscribe →</button>
+      <form class="subscribe-form max-w-lg mx-auto" data-form="footer">
+        <div class="flex flex-col gap-3">
+          <input type="text" name="name" placeholder="First name" class="px-5 py-4 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-cobalt-500/50 text-sm" />
+          <div class="flex">
+            <input type="email" name="email" required placeholder="your@email.com" class="flex-1 px-5 py-4 bg-white/[0.04] border border-white/10 border-r-0 text-white placeholder-gray-600 focus:outline-none focus:border-cobalt-500/50 text-sm" />
+            <button type="submit" class="subscribe-btn px-8 py-4 bg-golden-500 hover:bg-golden-400 text-navy-950 font-bold text-sm transition-colors">Subscribe →</button>
+          </div>
+        </div>
       </form>
       <p class="subscribe-msg text-gray-500 text-xs mt-3 hidden"></p>
     </div>
@@ -301,6 +311,7 @@ import Footer from '../components/Footer.astro';
         const btn = f.querySelector('.subscribe-btn') as HTMLButtonElement;
         const msg = f.parentElement?.querySelector('.subscribe-msg') || f.nextElementSibling;
         const email = (f.querySelector('input[name="email"]') as HTMLInputElement).value;
+        const name = (f.querySelector('input[name="name"]') as HTMLInputElement)?.value || '';
         
         btn.disabled = true;
         btn.textContent = 'Subscribing...';
@@ -309,7 +320,7 @@ import Footer from '../components/Footer.astro';
           const res = await fetch('/api/subscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({ email, name }),
           });
           const data = await res.json();
           
